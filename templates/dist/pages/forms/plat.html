@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Page d’ajout des plats</title>
+    <!-- plugins:css -->
+     {% load static %}
+    <link rel="stylesheet" href="{% static 'assets/vendors/feather/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css ">
+    <link rel="stylesheet" href="{% static  'assets/vendors/ti-icons/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/typicons/typicons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/simple-line-icons/css/simple-line-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css' %}">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/select2/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css' %}">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="{% static 'assets/images/restoManager.png' %}" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>/* Texte noir pour les selects et options */
+select.form-select, select.form-select option {
+    color: #000 !important;        /* texte noir */
+    background-color: #fff;        /* fond blanc */
+}
+</style>
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- partial:../../partials/_navbar.html -->
+      <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+          <div class="me-3">
+            <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
+              <span class="icon-menu"></span>
+            </button>
+          </div>
+          <div>
+            <a class="navbar-brand brand-logo" href="{% url 'home' %}">
+              <img src="{% static 'assets/images/restoManager.png' %}" alt="logo" />
+            </a>
+            <a class="navbar-brand brand-logo-mini" href="{% url 'home' %}">
+              <img src="{% static 'assets/images/restoManager.png' %}" alt="logo" />
+            </a>
+          </div>
+        </div>
+        <div class="navbar-menu-wrapper d-flex align-items-top">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item d-none d-lg-block">
+              <div id="datepicker-popup" class="input-group date datepicker navbar-date-picker">
+                <span class="input-group-addon input-group-prepend border-right">
+                  <span class="icon-calendar input-group-text calendar-icon"></span>
+                </span>
+                <input type="text" class="form-control">
+              </div>
+            </li>
+          </ul>
+          <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
+            <span class="mdi mdi-menu"></span>
+          </button>
+        </div>
+      </nav>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:../../partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">
+                <i class="mdi mdi-view-dashboard menu-icon"></i>
+                <span class="menu-title">Dashboard</span>
+              </a>
+            </li>
+
+            <!--Produit-->
+            <li class="nav-item nav-category">Produits</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ajout_produit' %}">
+                <i class="mdi mdi-plus-box menu-icon"></i>
+                <span class="menu-title">Ajout un produit</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'produits' %}">
+                <i class="mdi mdi-package-variant menu-icon"></i>
+                <span class="menu-title">Liste des produits</span>
+              </a>
+            </li>
+
+            <!--Plats-->
+            <li class="nav-item nav-category">Plats</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ajout_plat' %}">
+                <i class="mdi mdi-food menu-icon"></i>
+                <span class="menu-title">Ajouter un plat</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'plats' %}">
+                <i class="mdi mdi-food-variant menu-icon"></i>
+                <span class="menu-title">Liste des plats</span>
+              </a>
+            </li>
+
+            <!--Commande-->
+            <li class="nav-item nav-category">Commandes</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'commande' %}">
+                <i class="mdi mdi-cart-plus menu-icon"></i>
+                <span class="menu-title">Créer une commande</span>
+              </a>
+            </li>
+
+            <!--Utilisateurs-->
+            <li class="nav-item nav-category">Utilisateurs</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'add_user' %}">
+                <i class="mdi mdi-account-plus menu-icon"></i>
+                <span class="menu-title">Ajouter utilisateur</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'users' %}">
+                <i class="mdi mdi-account-multiple menu-icon"></i>
+                <span class="menu-title">Liste des utilisateurs</span>
+              </a>
+            </li>
+
+            <!--Notifications-->
+            <li class="nav-item nav-category">Notifications</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'notification' %}">
+                <i class="mdi mdi-bell menu-icon"></i>
+                <span class="menu-title">Notifications</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="container my-5">
+    <div class="card shadow-lg">
+        <div class="card-body">
+            <h3 class="mb-4"><i class="bi bi-egg-fried"></i> Créer un plat</h3>
+
+            <form id="plat-form">
+                <!-- Nom du plat -->
+                <div class="mb-3">
+                    <label for="nom" class="form-label">Nom du plat</label>
+                    <input type="text" id="nom" class="form-control" placeholder="Nom du plat" required>
+                </div>
+
+                <!-- Description -->
+               <div class="mb-3">
+  <label for="description" class="form-label">Description (choisir une ou plusieurs catégories)</label>
+  <select id="description" class="form-select" >
+    <option value="entrée">Entrée</option>
+    <option value="plat">Plat</option>
+    <option value="dessert">Dessert</option>
+    <option value="petit-déjeuner">Petit-déjeuner</option>
+  </select>
+</div>
+
+
+
+                <!-- Ingrédients -->
+                <h5 class="mt-4"><i class="bi bi-basket"></i> Ingrédients</h5>
+                <div id="ingredients-container" class="mb-3"></div>
+
+                <button type="button" class="btn btn-outline-primary mb-3" onclick="addIngredientField()">
+                    <i class="bi bi-plus-circle"></i> Ajouter un ingrédient
+                </button>
+
+                <div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle"></i> Créer le plat
+                    </button>
+                </div>
+            </form>
+
+            <!-- Liste des ingrédients ajoutés -->
+            <ul id="ingredient-preview" class="list-group mt-4"></ul>
+        </div>
+    </div>
+</div>
+
+<script>
+let produits = [];
+
+// Récupérer tous les produits
+async function fetchProduits() {
+    const res = await fetch("{{ API_URL }}/api/produits/");
+    produits = await res.json();
+}
+
+// Ajouter une ligne d'ingrédient
+function addIngredientField() {
+    const container = document.getElementById('ingredients-container');
+    const row = document.createElement('div');
+    row.className = 'row g-2 align-items-end mb-2 ingredient-row';
+
+    // Select produit
+    const select = document.createElement('select');
+    select.className = 'form-select col';
+    select.name = 'produit';
+    produits.forEach(p => {
+        const option = document.createElement('option');
+        option.value = p.id;
+        option.textContent = `${p.nom} (${p.unite})`;
+        select.appendChild(option);
+    });
+
+    // Quantité
+    const quantite = document.createElement('input');
+    quantite.type = 'number';
+    quantite.step = '0.1';
+    quantite.min = '0';
+    quantite.placeholder = 'Quantité';
+    quantite.className = 'form-control col';
+    quantite.name = 'quantite';
+
+    // Bouton supprimer
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'btn btn-danger col-auto';
+    removeBtn.innerHTML = '<i class="bi bi-trash3"></i>';
+    removeBtn.onclick = () => {
+        row.remove();
+        updateIngredientPreview();
+    };
+
+    row.appendChild(select);
+    row.appendChild(quantite);
+    row.appendChild(removeBtn);
+    container.appendChild(row);
+
+    updateIngredientPreview();
+}
+
+// Afficher un aperçu des ingrédients ajoutés
+function updateIngredientPreview() {
+    const container = document.getElementById("ingredients-container");
+    const rows = container.querySelectorAll(".ingredient-row");
+    const preview = document.getElementById("ingredient-preview");
+    preview.innerHTML = '';
+
+    rows.forEach(row => {
+        const produitName = row.querySelector('select').selectedOptions[0].textContent;
+        const quantite = row.querySelector('input[name="quantite"]').value;
+        if (quantite) {
+            const li = document.createElement('li');
+            li.className = 'list-group-item';
+            li.textContent = `${quantite} de ${produitName}`;
+            preview.appendChild(li);
+        }
+    });
+}
+
+// Soumission du formulaire
+document.getElementById("plat-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const nom = document.getElementById("nom").value;
+    const description = document.getElementById("description").value;
+
+    try {
+        // 1️⃣ Créer le plat
+        const platRes = await fetch("{{ API_URL }}/api/plats/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nom, description })
+        });
+
+        if (!platRes.ok) throw new Error("Erreur lors de la création du plat");
+
+        const platData = await platRes.json();
+        const platId = platData.id;
+
+        // 2️⃣ Créer les ingrédients
+        const container = document.getElementById("ingredients-container");
+        const rows = container.querySelectorAll(".ingredient-row");
+
+        for (const row of rows) {
+            const produitId = parseInt(row.querySelector('select[name="produit"]').value);
+            const quantite = parseFloat(row.querySelector('input[name="quantite"]').value);
+
+            if (!isNaN(produitId) && !isNaN(quantite)) {
+                await fetch("{{ API_URL }}/api/ingredients/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        plat: platId,
+                        produit: produitId,
+                        quantite_necessaire: quantite
+                    })
+                });
+            }
+        }
+
+        alert("Plat et ingrédients créés avec succès !");
+        document.getElementById("plat-form").reset();
+        document.getElementById("ingredients-container").innerHTML = '';
+        updateIngredientPreview();
+        addIngredientField(); // Ajouter une ligne vide par défaut
+    } catch (error) {
+        console.error(error);
+        alert("Une erreur est survenue. Vérifiez la console.");
+    }
+});
+
+// Mettre à jour l'aperçu à chaque changement
+document.getElementById("ingredients-container").addEventListener("input", updateIngredientPreview);
+
+// Initialisation
+window.onload = async () => {
+    await fetchProduits();
+    addIngredientField();
+};
+</script>
+
+          </div>
+          <!-- content-wrapper ends -->
+         
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="{% static 'assets/vendors/js/vendor.bundle.base.js'%}"></script>
+    <script src="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js'%}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="{% static 'assets/vendors/typeahead.js/typeahead.bundle.min.js'%}"></script>
+    <script src="{% static 'assets/vendors/select2/select2.min.js'%}"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="{% static 'assets/js/off-canvas.js'%}"></script>
+    <script src="{% static 'assets/js/template.js'%}"></script>
+    <script src="{% static 'assets/js/settings.js'%}"></script>
+    <script src="{% static 'assets/js/hoverable-collapse.js'%}"></script>
+    <script src="{% static 'assets/js/todolist.js'%}"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="{% static 'assets/js/file-upload.js'%}"></script>
+    <script src="{% static 'assets/js/typeahead.js'%}"></script>
+    <script src="{% static 'assets/js/select2.js'%}"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <!-- End custom js for this page-->
+  </body>
+</html>

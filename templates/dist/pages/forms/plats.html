@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Gestion des plats</title>
+    <!-- plugins:css -->
+     {% load static %}
+    <link rel="stylesheet" href="{% static 'assets/vendors/feather/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css ">
+    <link rel="stylesheet" href="{% static  'assets/vendors/ti-icons/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/typicons/typicons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/simple-line-icons/css/simple-line-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css' %}">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/select2/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css' %}">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="{% static 'assets/images/restoManager.png' %}" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>/* Texte noir pour toutes les options des selects */
+select.form-select, select.form-select option {
+    color: #000 !important;      /* texte noir */
+    background-color: #fff;      /* fond blanc pour les options */
+}
+</style>
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- partial:../../partials/_navbar.html -->
+      <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+          <div class="me-3">
+            <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
+              <span class="icon-menu"></span>
+            </button>
+          </div>
+          <div>
+            <a class="navbar-brand brand-logo" href="{% url 'home' %}">
+              <img src="{% static 'assets/images/restoManager.png' %}" alt="logo" />
+            </a>
+            <a class="navbar-brand brand-logo-mini" href="{% url 'home' %}">
+              <img src="{% static 'assets/images/restoManager.png' %}" alt="logo" />
+            </a>
+          </div>
+        </div>
+        <div class="navbar-menu-wrapper d-flex align-items-top">
+          
+          <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
+            <span class="mdi mdi-menu"></span>
+          </button>
+        </div>
+      </nav>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:../../partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">
+                <i class="mdi mdi-view-dashboard menu-icon"></i>
+                <span class="menu-title">Dashboard</span>
+              </a>
+            </li>
+
+            <!--Produit-->
+            <li class="nav-item nav-category">Produits</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ajout_produit' %}">
+                <i class="mdi mdi-plus-box menu-icon"></i>
+                <span class="menu-title">Ajouter un produit</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'produits' %}">
+                <i class="mdi mdi-package-variant menu-icon"></i>
+                <span class="menu-title">Liste des produits</span>
+              </a>
+            </li>
+
+            <!--Plats-->
+            <li class="nav-item nav-category">Plats</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ajout_plat' %}">
+                <i class="mdi mdi-food menu-icon"></i>
+                <span class="menu-title">Ajouter un plat</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'plats' %}">
+                <i class="mdi mdi-food-variant menu-icon"></i>
+                <span class="menu-title">Liste des plats</span>
+              </a>
+            </li>
+
+            <!--Commande-->
+            <li class="nav-item nav-category">Commandes</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'commande' %}">
+                <i class="mdi mdi-cart-plus menu-icon"></i>
+                <span class="menu-title">Créer une commande</span>
+              </a>
+            </li>
+
+            <!--Utilisateurs-->
+            <li class="nav-item nav-category">Utilisateurs</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'add_user' %}">
+                <i class="mdi mdi-account-plus menu-icon"></i>
+                <span class="menu-title">Ajouter utilisateur</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'users' %}">
+                <i class="mdi mdi-account-multiple menu-icon"></i>
+                <span class="menu-title">Liste des utilisateurs</span>
+              </a>
+            </li>
+
+            <!--Notifications-->
+            <li class="nav-item nav-category">Notifications</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'notification' %}">
+                <i class="mdi mdi-bell menu-icon"></i>
+                <span class="menu-title">Notifications</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+
+              <div class="container my-5">
+    <h3 class="mb-4"><i class="bi bi-list-ul"></i> Liste des plats</h3>
+                
+    <!-- Recherche -->
+    <div class="mb-3">
+        <input type="text" id="search-input" class="form-control" placeholder="Rechercher un plat...">
+    </div>
+<!-- Bouton Supprimer sélectionnés -->
+<div class="mb-3">
+    <button id="delete-selected-btn" class="btn btn-danger btn-sm">
+        <i class="bi bi-trash3"></i> Supprimer sélectionnés
+    </button>
+</div>
+
+    <!-- Table des plats -->
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th><input type="checkbox" id="select-all"></th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Ingrédients</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="plats-table-body"></tbody>
+    </table>
+</div>
+
+<script>
+let produits = [];
+let plats = [];
+
+// Récupérer tous les produits
+async function fetchProduits() {
+    const res = await fetch("{{ API_URL }}/api/produits/");
+    produits = await res.json();
+}
+
+// Récupérer tous les plats
+async function fetchPlats() {
+    const res = await fetch("{{ API_URL }}/api/plats/");
+    plats = await res.json();
+    displayPlats(plats);
+}
+
+// Afficher les plats dans la table
+function displayPlats(platsList) {
+    const tbody = document.getElementById("plats-table-body");
+    tbody.innerHTML = '';
+
+    platsList.forEach((plat) => {
+        const tr = document.createElement('tr');
+
+        // Checkbox
+        const checkTd = document.createElement('td');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'select-plat';
+        checkbox.value = plat.id;
+        checkTd.appendChild(checkbox);
+
+        // Nom éditable
+        const nomTd = document.createElement('td');
+        const nomInput = document.createElement('input');
+        nomInput.type = 'text';
+        nomInput.value = plat.nom;
+        nomInput.className = 'form-control';
+        nomTd.appendChild(nomInput);
+
+        // Description : select avec options
+        const descTd = document.createElement('td');
+        const descSelect = document.createElement('select');
+        descSelect.className = 'form-select';
+        ['entrée', 'plat', 'dessert', 'petit-déjeuner'].forEach(optionText => {
+            const option = document.createElement('option');
+            option.value = optionText;
+            option.textContent = optionText;
+            if (plat.description === optionText) option.selected = true;
+            descSelect.appendChild(option);
+        });
+        descTd.appendChild(descSelect);
+
+        // Ingrédients collapsibles
+        const ingTd = document.createElement('td');
+        const collapseId = `collapse-${plat.id}`;
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'btn btn-outline-secondary btn-sm mb-2';
+        toggleBtn.type = 'button';
+        toggleBtn.setAttribute('data-bs-toggle', 'collapse');
+        toggleBtn.setAttribute('data-bs-target', `#${collapseId}`);
+        toggleBtn.innerHTML = '<i class="bi bi-chevron-down"></i> Voir / Masquer';
+        ingTd.appendChild(toggleBtn);
+
+        const collapseDiv = document.createElement('div');
+        collapseDiv.className = 'collapse';
+        collapseDiv.id = collapseId;
+
+        const ingContainer = document.createElement('div');
+        ingContainer.className = 'ingredients-container mt-2';
+        collapseDiv.appendChild(ingContainer);
+
+        plat.ingredients.forEach(ing => {
+            addIngredientRow(ingContainer, ing, plat.id);
+        });
+
+        const addBtn = document.createElement('button');
+        addBtn.type = 'button';
+        addBtn.className = 'btn btn-outline-primary btn-sm mt-2';
+        addBtn.innerHTML = '<i class="bi bi-plus-circle"></i> Ajouter';
+        addBtn.onclick = () => addIngredientRow(ingContainer, null, plat.id);
+        collapseDiv.appendChild(addBtn);
+
+        ingTd.appendChild(collapseDiv);
+
+        // Actions
+        const actionTd = document.createElement('td');
+
+        const saveBtn = document.createElement('button');
+        saveBtn.className = 'btn btn-success btn-sm me-2';
+        saveBtn.textContent = 'Sauvegarder';
+        saveBtn.onclick = async () => {
+            // ici on récupère bien la valeur du select pour description
+            await savePlat(plat.id, nomInput.value, descSelect.value, ingContainer);
+        };
+
+        actionTd.appendChild(saveBtn);
+
+        tr.appendChild(checkTd);
+        tr.appendChild(nomTd);
+        tr.appendChild(descTd);
+        tr.appendChild(ingTd);
+        tr.appendChild(actionTd);
+
+        tbody.appendChild(tr);
+    });
+}
+
+// Ajouter ou modifier une ligne d'ingrédient
+function addIngredientRow(container, ingredient=null, platId=null) {
+    const row = document.createElement('div');
+    row.className = 'd-flex align-items-center mb-2 ingredient-row';
+
+    if (ingredient && ingredient.id) row.dataset.id = ingredient.id;
+
+    const select = document.createElement('select');
+    select.className = 'form-select me-2';
+    select.style.width = '50%';
+    select.name = 'produit';
+    produits.forEach(p => {
+        const option = document.createElement('option');
+        option.value = p.id;
+        option.textContent = `${p.nom} (${p.unite})`;
+        if (ingredient && p.id === ingredient.produit) option.selected = true;
+        select.appendChild(option);
+    });
+
+    const quantInput = document.createElement('input');
+    quantInput.type = 'number';
+    quantInput.step = '0.1';
+    quantInput.min = '0';
+    quantInput.placeholder = 'Quantité';
+    quantInput.className = 'form-control me-2';
+    quantInput.style.width = '30%';
+    quantInput.name = 'quantite';
+    if (ingredient) quantInput.value = ingredient.quantite_necessaire;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'btn btn-danger btn-sm';
+    removeBtn.innerHTML = '<i class="bi bi-trash3"></i>';
+    removeBtn.onclick = async () => {
+        if (ingredient && ingredient.id) {
+            await fetch(`{{ API_URL }}/api/ingredients/${ingredient.id}/`, { method: 'DELETE' });
+        }
+        row.remove();
+    };
+
+    row.appendChild(select);
+    row.appendChild(quantInput);
+    row.appendChild(removeBtn);
+    container.appendChild(row);
+}
+
+// Sauvegarder plat + ingrédients
+async function savePlat(platId, nom, description, ingContainer) {
+    try {
+        const res = await fetch(`{{ API_URL }}/api/plats/${platId}/`, {
+            method: 'PATCH',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nom, description })
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            console.error(err);
+            alert("Erreur lors de la sauvegarde : " + JSON.stringify(err));
+            return;
+        }
+
+        const rows = ingContainer.querySelectorAll('.ingredient-row');
+        for (const row of rows) {
+            const quant = parseFloat(row.querySelector('input[name="quantite"]').value);
+            const produitId = parseInt(row.querySelector('select[name="produit"]').value);
+
+            if (!isNaN(produitId) && !isNaN(quant)) {
+                if (row.dataset.id) {
+                    await fetch(`{{ API_URL }}/api/ingredients/${row.dataset.id}/`, {
+                        method: 'PATCH',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ produit: produitId, quantite_necessaire: quant })
+                    });
+                } else {
+                    await fetch(`{{ API_URL }}/api/ingredients/`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ plat: platId, produit: produitId, quantite_necessaire: quant })
+                    });
+                }
+            }
+        }
+
+        alert("Plat et ingrédients mis à jour !");
+        fetchPlats();
+    } catch (err) {
+        console.error(err);
+        alert("Erreur lors de la sauvegarde.");
+    }
+}
+
+// Suppression multiple
+document.getElementById('delete-selected-btn').onclick = async () => {
+    const selected = Array.from(document.querySelectorAll('.select-plat:checked')).map(cb => cb.value);
+    if (selected.length === 0) {
+        alert("Aucun plat sélectionné !");
+        return;
+    }
+
+    if (confirm(`Voulez-vous vraiment supprimer ${selected.length} plat(s) ?`)) {
+        try {
+            for (const id of selected) {
+                await fetch(`{{ API_URL }}/api/plats/${id}/`, { method: 'DELETE' });
+            }
+            alert("Plats supprimés !");
+            fetchPlats();
+        } catch (err) {
+            console.error(err);
+            alert("Erreur lors de la suppression.");
+        }
+    }
+};
+
+// Checkbox globale "Tout sélectionner"
+document.getElementById('select-all').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('.select-plat');
+    checkboxes.forEach(cb => cb.checked = this.checked);
+});
+
+// Recherche
+document.getElementById("search-input").addEventListener('input', (e) => {
+    const search = e.target.value.toLowerCase();
+    const filtered = plats.filter(p => p.nom.toLowerCase().includes(search));
+    displayPlats(filtered);
+});
+
+// Initialisation
+window.onload = async () => {
+    await fetchProduits();
+    await fetchPlats();
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+              
+
+
+                  
+
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
+         
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <script src="{% static 'assets/vendors/js/vendor.bundle.base.js'%}"></script>
+    <script src="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js'%}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="{% static 'assets/vendors/typeahead.js/typeahead.bundle.min.js'%}"></script>
+    <script src="{% static 'assets/vendors/select2/select2.min.js'%}"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="{% static 'assets/js/off-canvas.js'%}"></script>
+    <script src="{% static 'assets/js/template.js'%}"></script>
+    <script src="{% static 'assets/js/settings.js'%}"></script>
+    <script src="{% static 'assets/js/hoverable-collapse.js'%}"></script>
+    <script src="{% static 'assets/js/todolist.js'%}"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="{% static 'assets/js/file-upload.js'%}"></script>
+    <script src="{% static 'assets/js/typeahead.js'%}"></script>
+    <script src="{% static 'assets/js/select2.js'%}"></script>
+    <!-- End custom js for this page-->
+  </body>
+</html>

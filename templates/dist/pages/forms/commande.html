@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Nouvelle commande</title>
+    <!-- plugins:css -->
+     {% load static %}
+    <link rel="stylesheet" href="{% static 'assets/vendors/feather/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css ">
+    <link rel="stylesheet" href="{% static  'assets/vendors/ti-icons/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/typicons/typicons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/simple-line-icons/css/simple-line-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css' %}">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/select2/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css' %}">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="{% static 'assets/images/restoManager.png' %}" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+
+    <div class="container-scroller">
+      <!-- partial:../../partials/_navbar.html -->
+      <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+          <div class="me-3">
+            <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
+              <span class="icon-menu"></span>
+            </button>
+          </div>
+          <div>
+            <a class="navbar-brand brand-logo" href="{% url 'home' %}">
+              <img src="{% static 'assets/images/restoManager.png' %}" alt="logo" />
+            </a>
+            <a class="navbar-brand brand-logo-mini" href="{% url 'home' %}">
+              <img src="{% static 'assets/images/restoManager.png' %}" alt="logo" />
+            </a>
+          </div>
+        </div>
+        <div class="navbar-menu-wrapper d-flex align-items-top">
+          <ul class="navbar-nav">
+            <li class="nav-item fw-semibold d-none d-lg-block ms-0">
+              <h1 class="welcome-text">Good Morning, <span class="text-black fw-bold">John Doe</span></h1>
+              <h3 class="welcome-sub-text">Your performance summary this week </h3>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            
+            <li class="nav-item d-none d-lg-block">
+              <div id="datepicker-popup" class="input-group date datepicker navbar-date-picker">
+                <span class="input-group-addon input-group-prepend border-right">
+                  <span class="icon-calendar input-group-text calendar-icon"></span>
+                </span>
+                <input type="text" class="form-control">
+              </div>
+            </li>
+            
+          </ul>
+          <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
+            <span class="mdi mdi-menu"></span>
+          </button>
+        </div>
+      </nav>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:../../partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">
+                <i class="mdi mdi-view-dashboard menu-icon"></i>
+                <span class="menu-title">Dashboard</span>
+              </a>
+            </li>
+
+            <!--Produit-->
+            <li class="nav-item nav-category">Produits</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ajout_produit' %}">
+                <i class="mdi mdi-plus-box menu-icon"></i>
+                <span class="menu-title">Ajouter un produit</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'produits' %}">
+                <i class="mdi mdi-package-variant menu-icon"></i>
+                <span class="menu-title">Liste des produits</span>
+              </a>
+            </li>
+
+            <!--Plats-->
+            <li class="nav-item nav-category">Plats</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ajout_plat' %}">
+                <i class="mdi mdi-food menu-icon"></i>
+                <span class="menu-title">Ajouter un plat</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'plats' %}">
+                <i class="mdi mdi-food-variant menu-icon"></i>
+                <span class="menu-title">Liste des plats</span>
+              </a>
+            </li>
+
+            <!--Commande-->
+            <li class="nav-item nav-category">Commandes</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'commande' %}">
+                <i class="mdi mdi-cart-plus menu-icon"></i>
+                <span class="menu-title">Créer une commande</span>
+              </a>
+            </li>
+
+            <!--Utilisateurs-->
+            <li class="nav-item nav-category">Utilisateurs</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'add_user' %}">
+                <i class="mdi mdi-account-plus menu-icon"></i>
+                <span class="menu-title">Ajouter utilisateur</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'users' %}">
+                <i class="mdi mdi-account-multiple menu-icon"></i>
+                <span class="menu-title">Liste des utilisateurs</span>
+              </a>
+            </li>
+
+            <!--Notifications-->
+            <li class="nav-item nav-category">Notifications</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'notification' %}">
+                <i class="mdi mdi-bell menu-icon"></i>
+                <span class="menu-title">Notifications</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+
+              <div class="container">
+  <h1 class="mb-4 text-primary"><i class="bi bi-cart-plus"></i>Nouvelle commande</h1>
+
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">Ajouter plusieurs plats</h5>
+      <form id="multiCommandeForm">
+        <div id="commandeLines">
+          <!-- lignes ajoutées ici -->
+        </div>
+        <button type="button" id="addLineBtn" class="btn btn-secondary mb-3">
+          <i class="bi bi-plus-circle"></i> Ajouter un plat
+        </button>
+        <br/>
+        <button type="submit" class="btn btn-success">
+          <i class="bi bi-check-circle"></i> Valider la commande
+        </button>
+      </form>
+
+      <div id="messageBox" class="mt-3"></div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">Liste des commandes</h5>
+      <button id="deleteSelectedBtn" class="btn btn-danger mb-3" disabled>
+        <i class="bi bi-trash"></i> Supprimer la sélection
+      </button>
+      <table class="table table-striped" id="commandesTable">
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="selectAllCheckbox" /></th>
+            <th>#</th>
+            <th>Plat</th>
+            <th>Quantité</th>
+            <th>Date de commande</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Les commandes chargées dynamiquement ici -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const apiBase = '{{ API_URL }}/api';
+
+let plats = [];
+
+async function loadPlats() {
+  try {
+    const res = await axios.get(`${apiBase}/plats/`);
+    plats = res.data;
+    if (plats.length > 0) addCommandeLine(); // ajoute une ligne initiale
+  } catch (err) {
+    showMessage('Erreur lors du chargement des plats.', 'danger');
+    console.error(err);
+  }
+}
+
+function createPlatOptions() {
+  return plats.map(p => `<option value="${p.id}">${p.nom}</option>`).join('');
+}
+
+function addCommandeLine() {
+  const container = document.getElementById('commandeLines');
+  const line = document.createElement('div');
+  line.className = 'row mb-3 align-items-end';
+  line.innerHTML = `
+    <div class="col-md-7">
+      <label class="form-label">Plat</label>
+      <select class="form-select plat-select" required>
+        <option value="" disabled selected>-- Sélectionnez un plat --</option>
+        ${createPlatOptions()}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Quantité</label>
+      <input type="number" class="form-control quantite-input" min="1" value="1" required />
+    </div>
+    <div class="col-md-2">
+      <button type="button" class="btn btn-danger btn-remove-line" title="Supprimer cette ligne">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+  `;
+  container.appendChild(line);
+
+  // Bouton supprimer pour la ligne
+  line.querySelector('.btn-remove-line').onclick = () => {
+    container.removeChild(line);
+  };
+}
+
+function showMessage(msg, type = 'success') {
+  const box = document.getElementById('messageBox');
+  box.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+    ${msg}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>`;
+  setTimeout(() => {
+    const alertNode = box.querySelector('.alert');
+    if(alertNode) alertNode.classList.remove('show');
+  }, 5000);
+}
+
+async function loadCommandes() {
+  try {
+    const res = await axios.get(`${apiBase}/commandes/`);
+    const commandes = res.data;
+    const tbody = document.querySelector('#commandesTable tbody');
+    tbody.innerHTML = '';
+
+    commandes.forEach((c, i) => {
+      tbody.innerHTML += `
+        <tr data-id="${c.id}">
+          <td><input type="checkbox" class="rowCheckbox" /></td>
+          <td>${i + 1}</td>
+          <td>${c.plat.nom}</td>
+          <td>${c.quantite}</td>
+          <td>${new Date(c.date_commande).toLocaleString()}</td>
+          <td>
+            <button class="btn btn-sm btn-danger btn-delete" title="Supprimer cette commande">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+
+    // Gestion suppression individuelle
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+      btn.onclick = async e => {
+        const tr = e.target.closest('tr');
+        const id = tr.getAttribute('data-id');
+        if (confirm('Confirmer la suppression de cette commande ?')) {
+          try {
+            await axios.delete(`${apiBase}/commandes/${id}/`);
+            showMessage('Commande supprimée.', 'success');
+            loadCommandes();
+          } catch (err) {
+            showMessage('Erreur lors de la suppression.', 'danger');
+          }
+        }
+      };
+    });
+
+    // Gestion sélection checkbox
+    const checkboxes = document.querySelectorAll('.rowCheckbox');
+    const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+
+    function updateDeleteButton() {
+      const anyChecked = [...checkboxes].some(cb => cb.checked);
+      deleteSelectedBtn.disabled = !anyChecked;
+      selectAllCheckbox.checked = [...checkboxes].every(cb => cb.checked);
+      selectAllCheckbox.indeterminate = !selectAllCheckbox.checked && anyChecked;
+    }
+
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', updateDeleteButton);
+    });
+
+    // Select / deselect all
+    selectAllCheckbox.onchange = () => {
+      checkboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+      updateDeleteButton();
+    };
+
+    updateDeleteButton();
+
+  } catch (err) {
+    showMessage('Erreur lors du chargement des commandes.', 'danger');
+  }
+}
+
+// Supprimer plusieurs commandes sélectionnées
+document.getElementById('deleteSelectedBtn').onclick = async () => {
+  const checkboxes = document.querySelectorAll('.rowCheckbox');
+  const selectedIds = [...checkboxes]
+    .filter(cb => cb.checked)
+    .map(cb => cb.closest('tr').getAttribute('data-id'));
+
+  if (selectedIds.length === 0) return;
+
+  if (!confirm(`Confirmer la suppression de ${selectedIds.length} commande(s) ?`)) return;
+
+  try {
+    await Promise.all(selectedIds.map(id => axios.delete(`${apiBase}/commandes/${id}/`)));
+    showMessage(`${selectedIds.length} commande(s) supprimée(s).`, 'success');
+    loadCommandes();
+  } catch (err) {
+    showMessage('Erreur lors de la suppression multiple.', 'danger');
+  }
+};
+
+// Soumission du formulaire multi
+document.getElementById('multiCommandeForm').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const lignes = [...document.querySelectorAll('#commandeLines > div')];
+  if (lignes.length === 0) {
+    showMessage('Ajoutez au moins un plat.', 'warning');
+    return;
+  }
+
+  const commandesData = [];
+  for (let line of lignes) {
+    const platSelect = line.querySelector('.plat-select');
+    const quantiteInput = line.querySelector('.quantite-input');
+    if (!platSelect.value || quantiteInput.value < 1) {
+      showMessage('Tous les plats et quantités doivent être renseignés correctement.', 'warning');
+      return;
+    }
+    commandesData.push({
+      plat: platSelect.value,
+      quantite: parseInt(quantiteInput.value)
+    });
+  }
+
+  try {
+    for (const cmd of commandesData) {
+      await axios.post(`${apiBase}/commandes/`, cmd);
+    }
+    showMessage('✅ Commandes ajoutées avec succès !', 'success');
+
+    document.getElementById('commandeLines').innerHTML = '';
+    addCommandeLine();
+
+    loadCommandes();
+
+  } catch (err) {
+    let msg = 'Erreur lors de l\'ajout des commandes.';
+    if (err.response?.data?.error) msg = err.response.data.error;
+    showMessage(msg, 'danger');
+    console.error(err);
+  }
+});
+
+document.getElementById('addLineBtn').addEventListener('click', addCommandeLine);
+
+// Init
+loadPlats();
+loadCommandes();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+              
+
+
+                  
+
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:../../partials/_footer.html -->
+          <footer class="footer">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+              <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Premium <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap admin template</a> from BootstrapDash.</span>
+              <span class="float-none float-sm-end d-block mt-1 mt-sm-0 text-center">Copyright © 2023. All rights reserved.</span>
+            </div>
+          </footer>
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="{% static 'assets/vendors/js/vendor.bundle.base.js'%}"></script>
+    <script src="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js'%}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="{% static 'assets/vendors/typeahead.js/typeahead.bundle.min.js'%}"></script>
+    <script src="{% static 'assets/vendors/select2/select2.min.js'%}"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="{% static 'assets/js/off-canvas.js'%}"></script>
+    <script src="{% static 'assets/js/template.js'%}"></script>
+    <script src="{% static 'assets/js/settings.js'%}"></script>
+    <script src="{% static 'assets/js/hoverable-collapse.js'%}"></script>
+    <script src="{% static 'assets/js/todolist.js'%}"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="{% static 'assets/js/file-upload.js'%}"></script>
+    <script src="{% static 'assets/js/typeahead.js'%}"></script>
+    <script src="{% static 'assets/js/select2.js'%}"></script>
+    <!-- End custom js for this page-->
+  </body>
+</html>

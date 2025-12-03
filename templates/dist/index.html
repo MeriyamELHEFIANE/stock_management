@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Dashboard - RestoManager</title>
+    {% load static %}
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/feather/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/ti-icons/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/typicons/typicons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/simple-line-icons/css/simple-line-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css' %}">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/js/select.dataTables.min.css' %}">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="{% static 'assets/images/restoManager.png' %}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+    
+
+
+  <style>
+    /* Fixe la hauteur de la carte graphique avec scroll si besoin */
+    #chart-container {
+      height: auto;
+      overflow-y: visible;
+    }
+    /* Assure que le canvas utilise toute la largeur dispo
+    #commandesChart, #platsPieChart {
+      max-height: 400px;
+      width: 100%;
+      margin-bottom: 40px;
+    } */
+    #commandesChart, #doughnutchart {
+  width: 100%;
+  max-height: 400px; /* ajustable selon besoin */
+}
+
+  </style>
+  </head>
+  <body class="with-welcome-text">
+  <script>
+      document.addEventListener("DOMContentLoaded", () => {
+      const token = localStorage.getItem("token");
+      const role = localStorage.getItem("role") || "user";
+
+      // Si pas connecté → login
+      if (!token) {
+        window.location.replace("{% url 'login' %}");
+        return;
+      }
+
+      // Redirection des rôles
+      if (role === "admin") {
+        // admin → dashboard principal
+        if (!window.location.href.includes("{% url 'home' %}")) {
+          window.location.replace("{% url 'home' %}");
+          return;
+        }
+      } else {
+        // employé → commandes
+        if (!window.location.href.includes("{% url 'comEm' %}")) {
+          window.location.replace("{% url 'comEm' %}");
+          return;
+        }
+      }
+
+      // Remplir infos utilisateur
+      const username = localStorage.getItem("username") || "Guest";
+      const email = localStorage.getItem("email") || "guest@example.com";
+
+      const nameElem = document.getElementById("dropdownName");
+      const emailElem = document.getElementById("dropdownEmail");
+      const usernameElem = document.getElementById("username");
+
+      if (nameElem) nameElem.textContent = username;
+      if (emailElem) emailElem.textContent = email;
+      if (usernameElem) usernameElem.textContent = username;
+
+      // Logout
+      const logoutBtn = document.getElementById("logoutBtn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+          localStorage.clear();
+          window.location.replace("{% url 'login' %}");
+        });
+      }
+
+      // Empêcher retour arrière après logout
+      window.history.pushState(null, "", window.location.href);
+      window.onpopstate = () => {
+        window.history.pushState(null, "", window.location.href);
+      };
+    });
+
+    </script>
+
+    <div class="container-scroller">
+      
+      <!-- partial:partials/_navbar.html -->
+      <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+          <div class="me-3">
+            <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
+              <span class="icon-menu"></span>
+            </button>
+          </div>
+          <div>
+            <a class="navbar-brand brand-logo" href="{% url 'home' %}">
+              <img src="{% static 'assets/images/restoManager.png' %}" alt="logo" />
+            </a>
+            <a class="navbar-brand brand-logo-mini" href="{% url 'home' %}">
+              <img src="{% static 'assets/images/restoManager.png' %}" alt="logo" />
+            </a>
+          </div>
+        </div>
+        <div class="navbar-menu-wrapper d-flex align-items-top">
+          <ul class="navbar-nav">
+            <li class="nav-item fw-semibold d-none d-lg-block ms-0">
+              <h1 class="welcome-text">
+                Bonjour, <span id="username" class="text-black fw-bold"></span>
+              </h1>
+              <h3 class="welcome-sub-text">Résumé de vos activités cette semaine</h3>
+            </li>
+          </ul>
+
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item d-none d-lg-block">
+              <div id="datepicker-popup" class="input-group date datepicker navbar-date-picker">
+                <span class="input-group-addon input-group-prepend border-right">
+                  <span class="icon-calendar input-group-text calendar-icon"></span>
+                </span>
+                <input type="text" class="form-control">
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+  <a class="nav-link count-indicator position-relative" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
+    <i class="icon-bell"></i>
+    <span id="notifCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill">0</span>
+  </a>
+  <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown" id="notifDropdownMenu">
+    <a class="dropdown-item py-3 border-bottom" style="pointer-events: none;">
+      <p class="mb-0 fw-medium" id="notifHeader">You have 0 new notifications</p>
+    </a>
+  </div>
+</li>
+
+<style>
+  #notifCount {
+    transition: all 0.3s ease;
+    color: white;
+  }
+  #notifCount.bg-light {
+    color: black;
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  
+const API_URL = '{{ API_URL }}/api/notifications/';
+
+async function fetchNotificationsDropdown() {
+  try {
+    const response = await axios.get(API_URL);
+    const notifications = response.data;
+
+    // Filtrer les notifications non lues
+    const newNotifs = notifications.filter(n => !n.read); // ou n.is_read === false
+
+    const notifCount = document.getElementById('notifCount');
+
+    // Mettre à jour le compteur selon le vrai état
+    if(newNotifs.length > 0) {
+      notifCount.textContent = newNotifs.length;
+      notifCount.classList.remove('bg-light');
+      notifCount.classList.add('bg-danger');
+    } else {
+      notifCount.textContent = '';
+      notifCount.classList.remove('bg-danger');
+      notifCount.classList.add('bg-light');
+    }
+
+    document.getElementById('notifHeader').textContent = `You have ${newNotifs.length} new notifications`;
+
+    // Mettre à jour le dropdown
+    const dropdownMenu = document.getElementById('notifDropdownMenu');
+    dropdownMenu.querySelectorAll('.preview-item').forEach(item => item.remove());
+
+    newNotifs.forEach(n => {
+      const notifItem = document.createElement('a');
+      notifItem.className = 'dropdown-item preview-item py-3';
+      notifItem.href = "{% url 'notification' %}";
+
+      notifItem.innerHTML = `
+        <div class="preview-thumbnail">
+          <i class="mdi mdi-bell m-auto text-primary"></i>
+        </div>
+        <div class="preview-item-content">
+          <h6 class="preview-subject fw-normal text-dark mb-1">${n.type}</h6>
+          <p class="fw-light small-text mb-0">${n.message}</p>
+        </div>
+      `;
+      dropdownMenu.appendChild(notifItem);
+    });
+
+  } catch (error) {
+    console.error('Erreur lors de la récupération des notifications :', error);
+  }
+}
+
+// Réinitialiser le badge lorsqu'on ouvre le dropdown
+document.getElementById('notificationDropdown').addEventListener('click', () => {
+  const notifCount = document.getElementById('notifCount');
+  notifCount.textContent = '';
+  notifCount.classList.remove('bg-danger');
+  notifCount.classList.add('bg-light');
+});
+
+// Appel initial et intervalle
+fetchNotificationsDropdown();
+setInterval(fetchNotificationsDropdown, 30000);
+</script>
+
+
+
+            <li class="nav-item dropdown d-none d-lg-block user-dropdown">
+              <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                <img class="img-xs rounded-circle" src="{% static 'assets/images/faces/user.png'  %}" alt="Profile image"> </a>
+              <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
+                <div class="dropdown-header text-center">
+                  <!-- <img class="img-md rounded-circle" src="assets/images/faces/user.png" alt="Profile image"> -->
+                  <p class="mb-1 mt-3 fw-semibold" id="dropdownName"></p>
+                  <p class="fw-light text-muted mb-0" id="dropdownEmail"></p>
+              </div>
+              
+                <a class="dropdown-item" id="logoutBtn"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Se déconnecter</a>
+              </div>
+            </li>
+          </ul>
+          <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
+            <span class="mdi mdi-menu"></span>
+          </button>
+        </div>
+      </nav>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">
+                <i class="mdi mdi-view-dashboard menu-icon"></i>
+                <span class="menu-title">Dashboard</span>
+              </a>
+            </li>
+
+            <!--Produit-->
+            <li class="nav-item nav-category">Produits</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ajout_produit' %}">
+                <i class="mdi mdi-plus-box menu-icon"></i>
+                <span class="menu-title">Ajouter un produit</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'produits' %}">
+                <i class="mdi mdi-package-variant menu-icon"></i>
+                <span class="menu-title">Liste des produits</span>
+              </a>
+            </li>
+
+            <!--Plats-->
+            <li class="nav-item nav-category">Plats</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ajout_plat' %}">
+                <i class="mdi mdi-food menu-icon"></i>
+                <span class="menu-title">Ajouter un plat</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'plats' %}">
+                <i class="mdi mdi-food-variant menu-icon"></i>
+                <span class="menu-title">Liste des Plats</span>
+              </a>
+            </li>
+
+            <!--Commande-->
+            <li class="nav-item nav-category">Commandes</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'commande' %}">
+                <i class="mdi mdi-cart-plus menu-icon"></i>
+                <span class="menu-title">Créer une commande</span>
+              </a>
+            </li>
+
+            <!--Utilisateurs-->
+            <li class="nav-item nav-category">Utilisateurs</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'add_user' %}">
+                <i class="mdi mdi-account-plus menu-icon"></i>
+                <span class="menu-title">Ajouter utilisateur</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'users' %}">
+                <i class="mdi mdi-account-multiple menu-icon"></i>
+                <span class="menu-title">Liste des utilisateurs</span>
+              </a>
+            </li>
+
+            <!--Notifications-->
+            <li class="nav-item nav-category">Notifications</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'notification' %}">
+                <i class="mdi mdi-bell menu-icon"></i>
+                <span class="menu-title">Notifications</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="home-tab">
+                  <div class="d-sm-flex align-items-center justify-content-between border-bottom">
+                    <ul class="nav nav-tabs" role="tablist">
+                      <li class="nav-item">
+                        <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Vue d’ensemble</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="tab-content tab-content-basic">
+                    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="statistics-details d-flex align-items-center justify-content-between">
+                           <div>
+                              <p class="statistics-title">
+                                <i class="mdi mdi-cart-outline me-2 text-primary"></i> Total Commandes
+                              </p>
+                              <h3 class="rate-percentage" id="totalCommandes">0</h3>
+                            </div>
+
+                            <div>
+                              <p class="statistics-title">
+                                <i class="mdi mdi-food me-2 text-success"></i> Total Plats
+                              </p>
+                              <h3 id="totalPlats" class="rate-percentage">0</h3>
+                            </div>
+
+                            <div>
+                              <p class="statistics-title">
+                                <i class="mdi mdi-package-variant me-2 text-warning"></i> Total Produits
+                              </p>
+                              <h3 id="totalProduits" class="rate-percentage">0</h3>
+                            </div>
+
+                            <div class="d-none d-md-block">
+                              <p class="statistics-title">
+                                <i class="mdi mdi-alert-circle-outline me-2 text-danger"></i> Seuil Critique
+                              </p>
+                              <h3 id="seuilCritique" class="rate-percentage">0</h3>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="row flex-grow">
+                            <div class="col-12">
+                              <div class="card card-rounded">
+                                 <div class="card-body">
+                                  <div class="d-sm-flex justify-content-between align-items-start">
+                                    <div>
+                                      <h4 class="card-title">Commandes par Mois</h4>
+                                      <p class="card-subtitle">Analyse annuelle des commandes</p>
+                                    </div>
+                                    <div class="dropdown">
+                                      <button
+                                        class="btn btn-sm btn-outline-primary dropdown-toggle"
+                                        type="button"
+                                        id="yearDropdown"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                      >
+                                        <i class="bx bx-calendar"></i> 
+                                        <span id="selectedYear">0</span>
+                                      </button>
+                                      <ul class="dropdown-menu dropdown-menu-end" id="yearDropdownMenu"></ul>
+                                    </div>
+                                  </div>
+                                  <div id="chart-container" style="max-height: auto; overflow-y: auto;">
+                                    <canvas id="commandesChart"></canvas>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+axios.get('{{ API_URL }}/api/plats-par-quantite/')
+  .then(response => {
+    const data = response.data;
+
+    if (!data || data.length === 0) {
+      console.error("Aucune donnée reçue de l'API");
+      return;
+    }
+
+    const labels = data.map(item => item.nom);
+    const quantities = data.map(item => item.quantite);
+
+    // Palette pastel harmonieuse
+    const pastelColors = [
+  '#FFB3BA','#FFDFBA','#FFFFBA','#BAFFC9','#BAE1FF','#E0BBFF','#FFD1DC','#BFFCC6',
+  '#FFC9DE','#D1E0FF','#E0FFE0','#FFF0BA','#FFE0BA','#E0D1FF','#FFCCE5','#CCFFE0',
+  '#FFD8BA','#BAE0FF','#BAFFEB','#E0BAFF','#FFBAE0','#BAFFCF','#FFF5BA','#FFBAF0',
+  '#D1FFBA','#BAF0FF','#FFE1BA','#FFBAAA','#BAFFFA','#FFBA80','#BAFFD8','#FFBA90',
+  '#E0FFBA','#BAE0FF','#FFBAEC','#BAFFC9','#FFE0D1','#D1BAFF','#FFBAF5','#BAFFEA',
+  '#FFF8BA','#BAFFD1','#FFBAE8','#BAFFBA','#FFE1D1','#FFBAFF','#BAFFF0','#FFD1BA',
+  '#BAE8FF','#FFBADE','#BAFFC0','#FFF0BA','#FFBA80','#BAFFE1','#FFBAF0','#BAFFEF',
+  '#FFE0BA','#BAE0FF','#FFBAF5','#BAFFD8','#FFF0BA','#FFBAE0','#BAFFBA','#FFD1FF',
+  '#BAFFE0','#FFF5BA','#FFBA90','#BAFFC9','#FFE0BA','#BAE0FF','#FFBAEC','#BAFFEF',
+  '#FFF0BA','#BAFFD1','#FFBAF0','#BAFFE1','#FFE0D1','#FFBAFF','#BAFFEA','#FFD1BA',
+  '#BAE8FF','#FFBADE','#BAFFC0','#FFF0BA','#FFBA80','#BAFFE1','#FFBAF0','#BAFFEF',
+  '#FFE0BA','#BAE0FF','#FFBAF5','#BAFFD8','#FFF0BA','#FFBAE0','#BAFFBA','#FFD1FF',
+  '#BAFFE0','#FFF5BA','#FFBA90','#BAFFC9','#FFE0BA','#BAE0FF','#FFBAEC','#BAFFEF'
+];
+
+
+    const ctx = document.getElementById('doughnutchart').getContext('2d');
+
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: quantities,
+          backgroundColor: pastelColors,
+          borderColor: '#fff',
+          borderWidth: 2,
+          hoverOffset: 20
+        }]
+      },
+      options: {
+        responsive: true,
+        cutout: '60%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            // labels: {
+            //   usePointStyle: true,
+            //   pointStyle: 'circle',
+            //   padding: 20,
+            //   font: { size: 14, weight: '500' }
+            // }
+          },
+          tooltip: {
+            backgroundColor: '#333',
+            titleColor: '#fff',
+            bodyColor: '#fff',
+            bodyFont: { size: 14 },
+            callbacks: {
+              label: function(context) {
+                return context.label + ': ' + context.raw + ' commandes';
+              }
+            }
+          }
+        },
+        animation: {
+          animateRotate: true,
+          animateScale: true
+        }
+      }
+    });
+  })
+  .catch(error => {
+    console.error("Erreur lors de la récupération des données:", error);
+  });
+</script>
+
+                        <div class="col-12">
+                          <div class="row flex-grow">
+                            <div class="col-12 grid-margin stretch-card">
+                              <div class="card card-rounded">
+                                <div class="card-body">
+                                  <div class="row">
+                                    <div class="col-lg-12">
+                                      <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h4 class="card-title card-title-dash">Plats par quantité commandée</h4>
+                                      </div>
+                                      <div>
+                                        <canvas  id="doughnutchart"></canvas>
+                                      </div>
+                                      <div id="doughnutChart-legend" class="mt-5 text-center"></div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
+    <script src="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="{% static 'assets/vendors/chart.js/chart.umd.js' %}"></script>
+    <script src="{% static 'assets/vendors/progressbar.js/progressbar.min.js' %}"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="{% static 'assets/js/off-canvas.js' %}"></script>
+    <script src="{% static 'assets/js/template.js' %}"></script>
+    <script src="{% static 'assets/js/settings.js' %}"></script>
+    <script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
+    <script src="{% static 'assets/js/todolist.js' %}"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="{% static 'assets/js/jquery.cookie.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/dashboard.js' %}"></script>
+    <!-- <script src="assets/js/Chart.roundedBarCharts.js"></script> -->
+    <!-- End custom js for this page-->
+
+<script>
+document.getElementById("logoutBtn").addEventListener("click", () => {
+localStorage.removeItem("token");
+localStorage.removeItem("user");
+window.location.replace("/dist/pages/samples/login.html"); 
+});
+</script>
+<script>
+let barChartInstance = null;
+const yearDropdownMenu = document.getElementById("yearDropdownMenu");
+const yearDropdownBtn = document.getElementById("selectedYear"); // bouton affichant l'année sélectionnée
+// code nom
+document.addEventListener("DOMContentLoaded", function() {
+    const username = localStorage.getItem("username") || "Guest";
+    const email = localStorage.getItem("email") || "guest@example.com";
+
+    document.getElementById("dropdownName").textContent = username;
+    document.getElementById("username").textContent = username;
+    document.getElementById("dropdownEmail").textContent = email;
+});
+
+
+// Charger dynamiquement les années disponibles
+async function loadAvailableYears() {
+  try {
+    const res = await fetch('{{ API_URL }}/api/dashboard/years/');
+    if (!res.ok) throw new Error(`Erreur HTTP: ${res.status}`);
+    const years = await res.json();
+
+    if (years.length === 0) {
+      yearDropdownMenu.innerHTML = '<li><span class="dropdown-item disabled">Aucune année disponible</span></li>';
+      return;
+    }
+
+    yearDropdownMenu.innerHTML = '';
+
+    years.forEach(year => {
+      const li = document.createElement("li");
+      li.innerHTML = `<a class="dropdown-item" href="#">${year}</a>`;
+      li.addEventListener('click', () => {
+        yearDropdownBtn.textContent = year;
+        loadDashboard(year);
+      });
+      yearDropdownMenu.appendChild(li);
+    });
+
+    // Par défaut : sélectionner la première année (la plus récente)
+    yearDropdownBtn.textContent = years[0];
+    loadDashboard(years[0]);
+
+  } catch (error) {
+    alert("Erreur lors du chargement des années : " + error.message);
+    console.error(error);
+  }
+}
+
+// Charger le dashboard pour une année donnée
+async function loadDashboard(annee) {
+  try {
+    const res = await fetch(`{{ API_URL }}/api/dashboard/?annee=${annee}`);
+    if (!res.ok) throw new Error(`Erreur HTTP: ${res.status}`);
+    const data = await res.json();
+
+    // Afficher les totaux
+    document.getElementById('totalCommandes').textContent = data.total_commandes;
+    document.getElementById('totalProduits').textContent = data.total_produits;
+    document.getElementById('totalPlats').textContent = data.total_plats;
+    document.getElementById('seuilCritique').textContent = data.seuil_critique;
+
+    // Préparer données pour le graphique vertical (commandes par mois)
+    const moisNoms = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+    const commandesParMois = new Array(12).fill(0);
+    data.commandes_par_mois.forEach(item => {
+      const idx = parseInt(item.mois, 10) - 1;
+      commandesParMois[idx] = item.nombre;
+    });
+
+    // Détruire l'ancien graphique s'il existe
+    if (barChartInstance !== null) {
+      barChartInstance.destroy();
+    }
+
+    const ctxBar = document.getElementById('commandesChart').getContext('2d');
+    const gradient = ctxBar.createLinearGradient(0, 0, 0, 300);
+    gradient.addColorStop(0, 'rgba(0, 123, 255, 0.7)');
+    gradient.addColorStop(1, 'rgba(0, 123, 255, 0.3)');
+
+    barChartInstance = new Chart(ctxBar, {
+      type: 'bar',
+      data: {
+        labels: moisNoms,
+        datasets: [{
+          label: `📦 Commandes en ${annee}`,
+          data: commandesParMois,
+          backgroundColor: gradient,
+          borderColor: '#1e88e5',
+          borderWidth: 1,
+          borderRadius: 10,
+          barThickness: 30
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: value => Number.isInteger(value) ? value : null
+            }
+          }
+        },
+        plugins: {
+          legend: { display: true },
+          tooltip: { enabled: true }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+
+  } catch (error) {
+    alert("Erreur lors du chargement du dashboard : " + error.message);
+    console.error(error);
+  }
+}
+
+// Initialisation après chargement de la page
+window.addEventListener('DOMContentLoaded', () => {
+  loadAvailableYears();
+});
+
+</script>
+  </body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Gestion des utilisateurs</title>
+    <!-- plugins:css -->
+     {% load static %}
+    <link rel="stylesheet" href="{% static 'assets/vendors/feather/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css ">
+    <link rel="stylesheet" href="{% static  'assets/vendors/ti-icons/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/typicons/typicons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/simple-line-icons/css/simple-line-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css' %}">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/select2/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css' %}">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="{% static 'assets/images/restoManager.png' %}" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- partial:../../partials/_navbar.html -->
+      <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+          <div class="me-3">
+            <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
+              <span class="icon-menu"></span>
+            </button>
+          </div>
+          <div>
+            <a class="navbar-brand brand-logo" href="{% url 'home' %}">
+              <img src="{% static 'assets/images/restoManager.png' %}" alt="logo" />
+            </a>
+            <a class="navbar-brand brand-logo-mini" href="{% url 'home' %}">
+              <img src="{% static 'assets/images/restoManager.png' %}" alt="logo" />
+            </a>
+          </div>
+        </div>
+        <div class="navbar-menu-wrapper d-flex align-items-top">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item d-none d-lg-block">
+              <div id="datepicker-popup" class="input-group date datepicker navbar-date-picker">
+                <span class="input-group-addon input-group-prepend border-right">
+                  <span class="icon-calendar input-group-text calendar-icon"></span>
+                </span>
+                <input type="text" class="form-control">
+              </div>
+            </li>
+          </ul>
+          <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
+            <span class="mdi mdi-menu"></span>
+          </button>
+        </div>
+      </nav>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:../../partials/_sidebar.html -->
+       <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">
+                <i class="mdi mdi-view-dashboard menu-icon"></i>
+                <span class="menu-title">Dashboard</span>
+              </a>
+            </li>
+
+            <!--Produit-->
+            <li class="nav-item nav-category">Produits</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ajout_produit' %}">
+                <i class="mdi mdi-plus-box menu-icon"></i>
+                <span class="menu-title">Ajouter un produit</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'produits' %}">
+                <i class="mdi mdi-package-variant menu-icon"></i>
+                <span class="menu-title">Liste des produits</span>
+              </a>
+            </li>
+
+            <!--Plats-->
+            <li class="nav-item nav-category">Plats</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ajout_plat' %}">
+                <i class="mdi mdi-food menu-icon"></i>
+                <span class="menu-title">Ajouter un plat</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'plats' %}">
+                <i class="mdi mdi-food-variant menu-icon"></i>
+                <span class="menu-title">Liste des <portal></portal>plats</span>
+              </a>
+            </li>
+
+            <!--Commande-->
+            <li class="nav-item nav-category">Commandes</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'commande' %}">
+                <i class="mdi mdi-cart-plus menu-icon"></i>
+                <span class="menu-title">Créer une commande</span>
+              </a>
+            </li>
+
+            <!--Utilisateurs-->
+            <li class="nav-item nav-category">Utilisateurs</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'add_user' %}">
+                <i class="mdi mdi-account-plus menu-icon"></i>
+                <span class="menu-title">Ajouter utilisateur</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'users' %}">
+                <i class="mdi mdi-account-multiple menu-icon"></i>
+                <span class="menu-title">Liste des utilisateurs</span>
+              </a>
+            </li>
+
+            <!--Notifications-->
+            <li class="nav-item nav-category">Notifications</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'notification' %}">
+                <i class="mdi mdi-bell menu-icon"></i>
+                <span class="menu-title">Notifications</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+
+              <div class="container-xxl flex-grow-1 container-p-y mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0"><i class="bi bi-people-fill me-2"></i>Liste des utilisateurs</h2>
+  <div class="position-relative w-100" style="max-width: 300px;">
+    <input type="text" id="searchInput" class="form-control ps-5 rounded-pill" placeholder="Rechercher...">
+    <i class="bi bi-search position-absolute top-50 translate-middle-y" style="left: 15px; color: #888;"></i>
+  </div>
+</div>
+
+  <div class="table-responsive card p-3">
+    <table class="table table-hover table-bordered align-middle mb-0">
+      <thead>
+        <tr>
+          <!-- <th><i class="bi bi-hash"></i> ID</th> -->
+          <th><i class="bi bi-person"></i> Nom</th>
+          <th><i class="bi bi-envelope"></i> Email</th>
+          <th><i class="bi bi-shield-lock"></i> Rôle</th>
+          <th><i class="bi bi-gear"></i> Actions</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Modal Modification -->
+  <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="editUserForm">
+          <div class="modal-header">
+            <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Modifier Utilisateur</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="editUserId">
+            <div class="mb-3">
+              <label for="editNom" class="form-label">Nom</label>
+              <input type="text" class="form-control" id="editNom" required>
+            </div>
+            <div class="mb-3">
+              <label for="editEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="editEmail" required>
+            </div>
+            <div class="mb-3">
+              <label for="editRole" class="form-label">Rôle</label>
+              <select id="editRole" class="form-select" required>
+                <option value="admin">Admin</option>
+                <option value="employe">Employé</option>
+                <option value="gestionnaire">Gestionnaire</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Enregistrer</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> Annuler</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const apiUrl = "{{ API_URL }}/api/utilisateurs/";
+const userTableBody = document.getElementById("userTableBody");
+const searchInput = document.getElementById("searchInput");
+
+function loadUsers() {
+  axios.get(apiUrl)
+    .then(response => {
+      userTableBody.innerHTML = "";
+      response.data.forEach(user => {
+        const row = `
+          <tr>
+            
+            <td>${user.nom}</td>
+            <td>${user.email}</td>
+            <td>${user.role}</td>
+            <td class="table-actions">
+              <button class="btn btn-outline-warning btn-sm" onclick="openEditModal(${user.id}, '${user.nom}', '${user.email}', '${user.role}')"><i class="bi bi-pencil"></i></button>
+              <button class="btn btn-outline-danger btn-sm" onclick="deleteUser(${user.id})"><i class="bi bi-trash"></i></button>
+            </td>
+          </tr>
+        `;
+        userTableBody.insertAdjacentHTML("beforeend", row);
+      });
+    })
+    .catch(error => console.error("Erreur de chargement :", error));
+}
+
+// Search filter
+searchInput.addEventListener("input", () => {
+  const filter = searchInput.value.toLowerCase();
+  Array.from(userTableBody.rows).forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(filter) ? "" : "none";
+  });
+});
+
+// Edit modal
+function openEditModal(id, nom, email, role) {
+  document.getElementById("editUserId").value = id;
+  document.getElementById("editNom").value = nom;
+  document.getElementById("editEmail").value = email;
+  document.getElementById("editRole").value = role;
+  new bootstrap.Modal(document.getElementById("editUserModal")).show();
+}
+
+document.getElementById("editUserForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const id = document.getElementById("editUserId").value;
+  const data = {
+    nom: document.getElementById("editNom").value,
+    email: document.getElementById("editEmail").value,
+    role: document.getElementById("editRole").value,
+  };
+  axios.put(apiUrl + id + "/", data)
+    .then(() => {
+      alert("Utilisateur modifié !");
+      loadUsers();
+      bootstrap.Modal.getInstance(document.getElementById("editUserModal")).hide();
+    })
+    .catch(error => console.error("Erreur modification :", error));
+});
+
+function deleteUser(id) {
+  if (confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
+    axios.delete(apiUrl + id + "/")
+      .then(() => {
+        alert("Utilisateur supprimé !");
+        loadUsers();
+      })
+      .catch(error => console.error("Erreur suppression :", error));
+  }
+}
+
+// Initial load
+loadUsers();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+              
+
+
+                  
+
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="{% static 'assets/vendors/js/vendor.bundle.base.js'%}"></script>
+    <script src="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js'%}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="{% static 'assets/vendors/typeahead.js/typeahead.bundle.min.js'%}"></script>
+    <script src="{% static 'assets/vendors/select2/select2.min.js'%}"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="{% static 'assets/js/off-canvas.js'%}"></script>
+    <script src="{% static 'assets/js/template.js'%}"></script>
+    <script src="{% static 'assets/js/settings.js'%}"></script>
+    <script src="{% static 'assets/js/hoverable-collapse.js'%}"></script>
+    <script src="{% static 'assets/js/todolist.js'%}"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="{% static 'assets/js/file-upload.js'%}"></script>
+    <script src="{% static 'assets/js/typeahead.js'%}"></script>
+    <script src="{% static 'assets/js/select2.js'%}"></script>
+    <!-- End custom js for this page-->
+  </body>
+</html>

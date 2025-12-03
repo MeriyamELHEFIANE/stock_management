@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Notifications</title>
+    <!-- plugins:css -->
+     {% load static %}
+    <link rel="stylesheet" href="{% static 'assets/vendors/feather/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css ">
+    <link rel="stylesheet" href="{% static  'assets/vendors/ti-icons/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/typicons/typicons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/simple-line-icons/css/simple-line-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css' %}">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/select2/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css' %}">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="{% static 'assets/images/restoManager.png' %}" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- partial:../../partials/_navbar.html -->
+      <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+          <div class="me-3">
+            <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
+              <span class="icon-menu"></span>
+            </button>
+          </div>
+          <div>
+            <a class="navbar-brand brand-logo" href="{% url 'home' %}">
+              <img src="{% static 'assets/images/restoManager.png' %}" alt="logo" />
+            </a>
+            <a class="navbar-brand brand-logo-mini" href="{% url 'home' %}">
+              <img src="{% static 'assets/images/restoManager.png' %}" alt="logo" />
+            </a>
+          </div>
+        </div>
+        <div class="navbar-menu-wrapper d-flex align-items-top">
+          
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item d-none d-lg-block">
+              <div id="datepicker-popup" class="input-group date datepicker navbar-date-picker">
+                <span class="input-group-addon input-group-prepend border-right">
+                  <span class="icon-calendar input-group-text calendar-icon"></span>
+                </span>
+                <input type="text" class="form-control">
+              </div>
+            </li>
+          </ul>
+          <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
+            <span class="mdi mdi-menu"></span>
+          </button>
+        </div>
+      </nav>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:../../partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">
+                <i class="mdi mdi-view-dashboard menu-icon"></i>
+                <span class="menu-title">Dashboard</span>
+              </a>
+            </li>
+
+            <!--Produit-->
+            <li class="nav-item nav-category">Produits</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ajout_produit' %}">
+                <i class="mdi mdi-plus-box menu-icon"></i>
+                <span class="menu-title">Ajouter un produit</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'produits' %}">
+                <i class="mdi mdi-package-variant menu-icon"></i>
+                <span class="menu-title">Liste des produits</span>
+              </a>
+            </li>
+
+            <!--Plats-->
+            <li class="nav-item nav-category">Plats</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ajout_plat' %}">
+                <i class="mdi mdi-food menu-icon"></i>
+                <span class="menu-title">Ajouter un plat</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'plats' %}">
+                <i class="mdi mdi-food-variant menu-icon"></i>
+                <span class="menu-title">Liste des plats</span>
+              </a>
+            </li>
+
+            <!--Commande-->
+            <li class="nav-item nav-category">Commandes</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'commande' %}">
+                <i class="mdi mdi-cart-plus menu-icon"></i>
+                <span class="menu-title">Créer une commande</span>
+              </a>
+            </li>
+
+            <!--Utilisateurs-->
+            <li class="nav-item nav-category">Utilisateurs</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'add_user' %}">
+                <i class="mdi mdi-account-plus menu-icon"></i>
+                <span class="menu-title">Ajouter utilisateur</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'users' %}">
+                <i class="mdi mdi-account-multiple menu-icon"></i>
+                <span class="menu-title">Liste des utilisateurs</span>
+              </a>
+            </li>
+
+            <!--Notifications-->
+            <li class="nav-item nav-category">Notifications</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'notification' %}">
+                <i class="mdi mdi-bell menu-icon"></i>
+                <span class="menu-title">Notifications</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-bell"></i> Notifications</h2>
+    <div>
+      
+      <button id="deleteBtn" class="btn btn-danger">Supprimer sélectionnées</button>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un message...">
+    </div>
+    <div class="col-md-6">
+      <select id="typeFilter" class="form-select">
+        <option value="">Tous les types</option>
+        <option value="epuise">epuise</option>
+        <option value="critique">critique</option>
+        <option value="peremption">peremption</option>
+        <!-- Ajoute ici d'autres types selon ton backend -->
+      </select>
+    </div>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><input type="checkbox" id="selectAll"></th>
+        <th>Type</th>
+        <th>Message</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="notificationsTable"></tbody>
+  </table>
+</div>
+<script>
+ const API_URL = '{{ API_URL }}/api/notifications/';
+let notifications = [];
+
+// Mapping type -> couleur
+const typeColors = {
+  epuise: '#f28b82',    // rouge clair
+  critique: '#fbbc04',  // orange
+  peremption: '#aecbfa',// bleu clair
+  // ajoute d'autres types si nécessaire
+};
+
+// Récupération des notifications depuis le backend
+async function fetchNotifications() {
+  try {
+    const response = await axios.get(API_URL);
+    notifications = response.data;
+    renderNotifications();
+  } catch (error) {
+    console.error('Erreur lors de la récupération des notifications :', error);
+  }
+}
+
+// Fonction pour afficher les notifications dans le tableau
+function renderNotifications() {
+  const tableBody = document.getElementById('notificationsTable');
+  const searchValue = document.getElementById('searchInput').value.toLowerCase();
+  const filterType = document.getElementById('typeFilter').value;
+
+  const filtered = notifications.filter(n => {
+    return (!filterType || n.type === filterType) &&
+           (!searchValue || n.message.toLowerCase().includes(searchValue));
+  });
+
+  tableBody.innerHTML = '';
+
+  filtered.forEach(notification => {
+    const color = typeColors[notification.type] || 'black';
+
+    tableBody.innerHTML += `
+      <tr style="background-color: ${color}33;"> <!-- fond coloré léger -->
+        <td><input type="checkbox" class="notif-checkbox" value="${notification.id}"></td>
+        <td style="color: ${color}; font-weight: bold;">${notification.type}</td>
+        <td>${notification.message}</td>
+        <td>${new Date(notification.date).toLocaleString()}</td>
+      </tr>`;
+  });
+}
+
+// Supprimer les notifications sélectionnées
+async function deleteSelectedNotifications() {
+  const checked = document.querySelectorAll('.notif-checkbox:checked');
+  const ids = Array.from(checked).map(cb => cb.value);
+
+  if (ids.length === 0) return alert("Veuillez sélectionner au moins une notification.");
+
+  try {
+    // Utilisation de ton endpoint delete_selected si disponible
+    await axios.post(`${API_URL}delete_selected/`, { ids });
+    notifications = notifications.filter(n => !ids.includes(n.id.toString()));
+    renderNotifications();
+  } catch (error) {
+    console.error('Erreur lors de la suppression :', error);
+    alert('Erreur lors de la suppression.');
+  }
+}
+
+// Événements
+document.getElementById('deleteBtn').addEventListener('click', deleteSelectedNotifications);
+document.getElementById('searchInput').addEventListener('input', renderNotifications);
+document.getElementById('typeFilter').addEventListener('change', renderNotifications);
+
+document.getElementById('selectAll').addEventListener('change', (e) => {
+  document.querySelectorAll('.notif-checkbox').forEach(cb => cb.checked = e.target.checked);
+});
+
+// Initialisation
+fetchNotifications();
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+              
+
+
+                  
+
+            </div>
+          </div>
+          
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="{% static 'assets/vendors/js/vendor.bundle.base.js'%}"></script>
+    <script src="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js'%}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="{% static 'assets/vendors/typeahead.js/typeahead.bundle.min.js'%}"></script>
+    <script src="{% static 'assets/vendors/select2/select2.min.js'%}"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="{% static 'assets/js/off-canvas.js'%}"></script>
+    <script src="{% static 'assets/js/template.js'%}"></script>
+    <script src="{% static 'assets/js/settings.js'%}"></script>
+    <script src="{% static 'assets/js/hoverable-collapse.js'%}"></script>
+    <script src="{% static 'assets/js/todolist.js'%}"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="{% static 'assets/js/file-upload.js'%}"></script>
+    <script src="{% static 'assets/js/typeahead.js'%}"></script>
+    <script src="{% static 'assets/js/select2.js'%}"></script>
+    <!-- End custom js for this page-->
+  </body>
+</html>

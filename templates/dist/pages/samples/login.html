@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Page de login </title>
+    {% load static %}
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/feather/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/ti-icons/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/typicons/typicons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/simple-line-icons/css/simple-line-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css' %}">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="{% static 'assets/images/restoManager.png' %}" />
+    
+  </head>
+<body class="bg-light">
+
+  <div class="container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-lg p-4 rounded-4">
+        
+        <!-- Logo -->
+        <div class="brand-logo text-center mb-3">
+          <img src="{% static 'assets/images/restoManager.png' %}" alt="logo" class="img-fluid" style="max-width: 100px;">
+        </div>
+
+        <!-- Textes -->
+        <h4 class="text-center mb-1">Bonjour ! Commençons</h4>
+        <h6 class="fw-light text-center mb-4">Connectez-vous pour continuer.</h6>
+
+        <!-- Formulaire -->
+        <form method="POST" id="loginForm">
+          <!-- Email -->
+          <div id="error" class="hidden text-danger mt-2"></div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Adresse e-mail</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Entrez votre e-mail" required>
+          </div>
+
+          <!-- Mot de passe -->
+          <div class="mb-3">
+            <label for="password" class="form-label">Mot de passe</label>
+            <input type="password" class="form-control" id="motDePasse" name="motDePasse" placeholder="Entrez votre mot de passe" required>
+          </div>
+
+          <!-- Bouton connexion -->
+          <div class="mt-3 d-grid gap-2">
+            <button class="btn btn-primary btn-lg fw-medium auth-form-btn" type="submit">
+              SE CONNECTER
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+const API_URL = "{{ API_URL }}";  // Django injecte ici l'URL correcte
+
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("loginForm");
+    const errorElem = document.getElementById("error");
+
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value.trim();
+        const motDePasse = document.getElementById("motDePasse").value.trim();
+
+        if (!email || !motDePasse) {
+            errorElem.textContent = "⚠️ Veuillez remplir tous les champs.";
+            errorElem.classList.remove("hidden");
+            return;
+        }
+
+        try {
+            // ⚡ Utilise les backticks pour les template literals
+            const response = await fetch(`${API_URL}/api/login/`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, motDePasse })
+            });
+
+            if (!response.ok) {
+                throw new Error("Email ou mot de passe incorrect.");
+            }
+
+            const data = await response.json();
+            if (!data.token) throw new Error("⚠️ Aucun token reçu.");
+
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("username", data.nom || "Utilisateur");
+            localStorage.setItem("email", data.email || "inconnu@example.com");
+            localStorage.setItem("role", data.role || "employe");
+
+            if (data.role === "admin") window.location.replace("{% url 'home' %}");
+            else window.location.replace("{% url 'comEm' %}");
+
+        } catch (error) {
+            console.error("Erreur login :", error);
+            errorElem.textContent = error.message;
+            errorElem.classList.remove("hidden");
+        }
+    });
+});
+</script>
+
+
+
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- JS vendor -->
+  <script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
+  <script src="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
+  <script src="{% static 'assets/js/off-canvas.js' %}"></script>
+  <script src="{% static 'assets/js/template.js' %}"></script>
+  <script src="{% static 'assets/js/settings.js' %}"></script>
+  <script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
+  <script src="{% static 'assets/js/todolist.js' %}"></script>
+</body>
+
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Gestion des produits</title>
+    <!-- plugins:css -->
+     {% load static %}
+    <link rel="stylesheet" href="{% static 'assets/vendors/feather/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css ">
+    <link rel="stylesheet" href="{% static  'assets/vendors/ti-icons/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/typicons/typicons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/simple-line-icons/css/simple-line-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css' %}">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/select2/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css' %}">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="{% static 'assets/images/restoManager.png' %}" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- partial:../../partials/_navbar.html -->
+      <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+          <div class="me-3">
+            <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
+              <span class="icon-menu"></span>
+            </button>
+          </div>
+          <div>
+            <a class="navbar-brand brand-logo" href="{% url 'home' %}">
+              <img src="{% static 'assets/images/restoManager.png' %}" alt="logo" />
+            </a>
+            <a class="navbar-brand brand-logo-mini" href="{% url 'home' %}">
+              <img src="{% static 'assets/images/restoManager.png' %}" alt="logo" />
+            </a>
+          </div>
+        </div>
+        <div class="navbar-menu-wrapper d-flex align-items-top">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item d-none d-lg-block">
+              <div id="datepicker-popup" class="input-group date datepicker navbar-date-picker">
+                <span class="input-group-addon input-group-prepend border-right">
+                  <span class="icon-calendar input-group-text calendar-icon"></span>
+                </span>
+                <input type="text" class="form-control">
+              </div>
+            </li>
+          </ul>
+          <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
+            <span class="mdi mdi-menu"></span>
+          </button>
+        </div>
+      </nav>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:../../partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">
+                <i class="mdi mdi-view-dashboard menu-icon"></i>
+                <span class="menu-title">Dashboard</span>
+              </a>
+            </li>
+
+            <!--Produit-->
+            <li class="nav-item nav-category">Produits</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ajout_produit' %}">
+                <i class="mdi mdi-plus-box menu-icon"></i>
+                <span class="menu-title">Ajouter un produit</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'produits' %}">
+                <i class="mdi mdi-package-variant menu-icon"></i>
+                <span class="menu-title">Liste des produits</span>
+              </a>
+            </li>
+
+            <!--Plats-->
+            <li class="nav-item nav-category">Plats</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'ajout_plat' %}">
+                <i class="mdi mdi-food menu-icon"></i>
+                <span class="menu-title">Ajouter un plat</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'plats' %}">
+                <i class="mdi mdi-food-variant menu-icon"></i>
+                <span class="menu-title">Liste des plats</span>
+              </a>
+            </li>
+
+            <!--Commande-->
+            <li class="nav-item nav-category">Commandes</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'commande' %}">
+                <i class="mdi mdi-cart-plus menu-icon"></i>
+                <span class="menu-title">Créer une commande</span>
+              </a>
+            </li>
+
+            <!--Utilisateurs-->
+            <li class="nav-item nav-category">Utilisateurs</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'add_user' %}">
+                <i class="mdi mdi-account-plus menu-icon"></i>
+                <span class="menu-title">Ajouter utilisateur</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'users' %}">
+                <i class="mdi mdi-account-multiple menu-icon"></i>
+                <span class="menu-title">Liste des utilisateurs</span>
+              </a>
+            </li>
+
+            <!--Notifications-->
+            <li class="nav-item nav-category">Notifications</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'notification' %}">
+                <i class="mdi mdi-bell menu-icon"></i>
+                <span class="menu-title">Notifications</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+
+              <div class="container mt-5">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary">
+      <i class="bi bi-box-seam"></i> Liste des Produits
+    </h2>
+    <a href="/dist/pages/forms/basic_elements.html"
+   class="btn btn-primary rounded-pill shadow-sm">
+  <i class="bi bi-plus-lg"></i> Ajouter Produit
+</a>
+
+  </div>
+
+  <!-- Toolbar -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="input-group w-50">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un produit...">
+      </div>
+      <button class="btn btn-danger ms-2" onclick="supprimerSelection()">
+  <i class="bi bi-trash"></i> Supprimer sélection
+</button>
+
+  </div>
+
+  <!-- Table -->
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Nom</th>
+              <th>Quantité</th>
+              <th>Unité</th>
+              <th>Seuil critique</th>
+              <th>Date péremption</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="produitsTableBody">
+            <tr>
+              <td colspan="7" class="text-center text-muted py-4">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2 mb-0">Chargement...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Modifier Produit -->
+<div class="modal fade" id="editProduitModal" tabindex="-1" aria-labelledby="editProduitModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content border-0 shadow">
+      <form id="editProduitForm">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title fw-bold" id="editProduitModalLabel">
+            <i class="bi bi-pencil-square"></i> Modifier Produit
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editId">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Nom</label>
+              <input type="text" id="editNom" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Quantité</label>
+              <input type="number" step="0.1" id="editQuantite" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Unité</label>
+              <input type="text" id="editUnite" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Seuil critique</label>
+              <input type="number" step="0.1" id="editSeuil" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Date péremption</label>
+              <input type="date" id="editDate" class="form-control" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Annuler
+          </button>
+          <button type="submit" class="btn btn-success">
+            <i class="bi bi-check-circle"></i> Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+    const API_URL = "{{ API_URL }}/api/produits/";
+    const tableBody = document.getElementById("produitsTableBody");
+    const searchInput = document.getElementById("searchInput");
+    let produitsGlobaux = []; // stockage global des produits
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const username = localStorage.getItem("username") || "Guest";
+        const email = localStorage.getItem("email") || "guest@example.com";
+
+        if (document.getElementById("dropdownName")) {
+            document.getElementById("dropdownName").textContent = username;
+            document.getElementById("username").textContent = username;
+            document.getElementById("dropdownEmail").textContent = email;
+        }
+
+        // Charger au démarrage
+        chargerProduits();
+    });
+
+    // Charger la liste des produits
+    function chargerProduits() {
+        axios.get(API_URL)
+            .then(res => {
+                produitsGlobaux = res.data; // stocker tous les produits
+                afficherProduits(produitsGlobaux);
+            })
+            .catch(err => {
+                console.error(err);
+                tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Erreur de chargement</td></tr>`;
+            });
+    }
+
+    // Afficher les produits (avec possibilité de filtrage)
+    function afficherProduits(produits) {
+        tableBody.innerHTML = "";
+
+        if (produits.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">Aucun produit trouvé</td></tr>`;
+            return;
+        }
+
+        produits.forEach((p) => {
+            tableBody.innerHTML += `
+                <tr>
+                    <td><input type="checkbox" class="select-produit" value="${p.id}"></td>
+                    <td>${p.nom}</td>
+                    <td>${p.quantite}</td>
+                    <td>${p.unite}</td>
+                    <td>${p.seuil_critique}</td>
+                    <td>${p.date_peremption}</td>
+                    <td class="text-center">
+                        <button class="btn btn-warning btn-sm" 
+                            onclick="ouvrirModal(${p.id}, '${p.nom}', ${p.quantite}, '${p.unite}', ${p.seuil_critique}, '${p.date_peremption}')">
+                            Modifier
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="supprimerProduit(${p.id})">
+                            Supprimer
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    // Filtrage dynamique
+    searchInput.addEventListener("keyup", function() {
+        const query = this.value.toLowerCase();
+        const filtres = produitsGlobaux.filter(p => p.nom.toLowerCase().includes(query));
+        afficherProduits(filtres);
+    });
+
+    // Ouvrir modal avec les infos du produit
+    function ouvrirModal(id, nom, quantite, unite, seuil, date) {
+        document.getElementById("editId").value = id;
+        document.getElementById("editNom").value = nom;
+        document.getElementById("editQuantite").value = quantite;
+        document.getElementById("editUnite").value = unite;
+        document.getElementById("editSeuil").value = seuil;
+        document.getElementById("editDate").value = date;
+
+        const modal = new bootstrap.Modal(document.getElementById("editProduitModal"));
+        modal.show();
+    }
+
+    // Soumettre le formulaire de modification
+    document.getElementById("editProduitForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const id = document.getElementById("editId").value;
+        const produit = {
+            nom: document.getElementById("editNom").value,
+            quantite: document.getElementById("editQuantite").value,
+            unite: document.getElementById("editUnite").value,
+            seuil_critique: document.getElementById("editSeuil").value,
+            date_peremption: document.getElementById("editDate").value
+        };
+
+        axios.put(API_URL + id + "/", produit)
+            .then(() => {
+                chargerProduits();
+                bootstrap.Modal.getInstance(document.getElementById("editProduitModal")).hide();
+            })
+            .catch(err => {
+                alert("Erreur lors de la mise à jour du produit");
+                console.error(err);
+            });
+    });
+
+    // Supprimer un seul produit
+    function supprimerProduit(id) {
+        if (confirm("Voulez-vous vraiment supprimer ce produit ?")) {
+            axios.delete(API_URL + id + "/")
+                .then(() => {
+                    chargerProduits();
+                })
+                .catch(err => {
+                    alert("Erreur lors de la suppression du produit");
+                    console.error(err);
+                });
+        }
+    }
+
+    // Supprimer plusieurs produits sélectionnés
+    function supprimerSelection() {
+        const checkboxes = document.querySelectorAll(".select-produit:checked");
+        if (checkboxes.length === 0) {
+            alert("Veuillez sélectionner au moins un produit à supprimer.");
+            return;
+        }
+
+        if (!confirm("Voulez-vous vraiment supprimer les produits sélectionnés ?")) {
+            return;
+        }
+
+        const ids = Array.from(checkboxes).map(cb => cb.value);
+
+        // Exécuter les suppressions en parallèle
+        Promise.all(ids.map(id => axios.delete(API_URL + id + "/")))
+            .then(() => {
+                chargerProduits();
+            })
+            .catch(err => {
+                alert("Erreur lors de la suppression de plusieurs produits");
+                console.error(err);
+            });
+    }
+</script>
+
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="{% static 'assets/vendors/js/vendor.bundle.base.js'%}"></script>
+    <script src="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js'%}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="{% static 'assets/vendors/typeahead.js/typeahead.bundle.min.js'%}"></script>
+    <script src="{% static 'assets/vendors/select2/select2.min.js'%}"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="{% static 'assets/js/off-canvas.js'%}"></script>
+    <script src="{% static 'assets/js/template.js'%}"></script>
+    <script src="{% static 'assets/js/settings.js'%}"></script>
+    <script src="{% static 'assets/js/hoverable-collapse.js'%}"></script>
+    <script src="{% static 'assets/js/todolist.js'%}"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="{% static 'assets/js/file-upload.js'%}"></script>
+    <script src="{% static 'assets/js/typeahead.js'%}"></script>
+    <script src="{% static 'assets/js/select2.js'%}"></script>
+    <!-- End custom js for this page-->
+     
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  </body>
+</html>
