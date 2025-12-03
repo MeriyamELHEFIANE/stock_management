@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ['*']
 if DEBUG:
     API_URL = 'http://127.0.0.1:8000'
 else:
-    API_URL = 'https://stock-management-hx0a.onrender.com'
+    API_URL = 'https://stock-management-zy8k.onrender.com'
 
 
 # Application definition
